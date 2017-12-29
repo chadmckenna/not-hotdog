@@ -4,6 +4,7 @@ bleach==1.5.0
 decorator==4.1.2
 entrypoints==0.2.3
 enum34==1.1.6
+h5py==2.7.1
 html5lib==0.9999999
 ipykernel==4.7.0
 ipython==6.2.1
@@ -24,10 +25,12 @@ nbconvert==5.3.1
 nbformat==4.4.0
 notebook==5.2.2
 numpy==1.13.3
+olefile==0.44
 pandocfilters==1.4.2
 parso==0.1.1
 pexpect==4.3.1
 pickleshare==0.7.4
+Pillow==4.3.0
 pluggy==0.6.0
 prompt-toolkit==1.0.15
 protobuf==3.5.1
