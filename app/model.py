@@ -1,0 +1,34 @@
+import numpy as np
+import tensorflow as tf
+import keras
+from keras.applications.vgg16 import VGG16
+from keras.models import load_model
+from keras.preprocessing.image import img_to_array, load_img
+
+top_model_weights_path = 'weights-skewed.h5'
+model_name = 'model-skewed.h5'
+
+base_model = VGG16(weights='imagenet', include_top=False)
+
+model = load_model(model_name)
+model.load_weights(top_model_weights_path)
+graph = tf.get_default_graph()
+
+def shape_img(img):
+    x = img_to_array(img)
+    x = x.reshape((1,) + x.shape)
+    x = x / 255.
+    return x
+
+def build_feature_img(model, img):
+    return model.predict(shape_img(img))
+
+def make_prediction(base_model, model, img):
+    feature_img = build_feature_img(base_model, img)
+    return model.predict_classes(feature_img), model.predict_proba(feature_img)
+
+def predict(img_filename):
+    img = load_img(img_filename, False, target_size=(150, 150))
+    with graph.as_default():
+        prediction, prob = make_prediction(base_model, model, img)
+        return ['hotdog', 'not hotdog'][prediction.item(0)], prob
