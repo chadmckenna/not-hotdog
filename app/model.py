@@ -23,12 +23,16 @@ def shape_img(img):
 def build_feature_img(model, img):
     return model.predict(shape_img(img))
 
+def predict_class(prob):
+    return 0 if prob > 0.80 else 1
+
 def make_prediction(base_model, model, img):
     feature_img = build_feature_img(base_model, img)
-    return model.predict_classes(feature_img), model.predict_proba(feature_img)
+    prob = 1 - model.predict_proba(feature_img)[0,0]
+    return predict_class(prob), prob
 
 def predict(img_filename):
     img = load_img(img_filename, False, target_size=(150, 150))
     with graph.as_default():
         prediction, prob = make_prediction(base_model, model, img)
-        return ['hotdog', 'not hotdog'][prediction.item(0)], prob
+        return ['hotdog', 'not hotdog'][prediction], prob
