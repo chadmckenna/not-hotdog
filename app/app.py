@@ -1,7 +1,8 @@
 import os
 from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
-from model import predict
+from model import predict as predict_simple
+from model_connected import predict as predict_connected
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
@@ -32,7 +33,13 @@ def is_hotdog():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        predictions = predict(file_path)
-        return jsonify({'what': predictions[0], 'probability': predictions[1].tolist()})
+        predictions_1 = predict_simple(file_path)
+        predictions_2 = predict_connected(file_path)
+        return jsonify({
+            'model1':
+                {'what': predictions_1[0], 'probability': predictions_1[1].tolist()},
+            'model2':
+                {'what': predictions_2[0], 'probability': predictions_2[1].tolist()}
+            })
 
     return 'Nope'

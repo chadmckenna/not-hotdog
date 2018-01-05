@@ -2,5 +2,9 @@ data/
 venv/
 test/
 data-skewed/
+data-connected/
 notebooks/bottleneck_features_train-skewed.npy
 app/uploads
+notebooks/bottleneck_model-connected-long.h5
+notebooks/bottleneck_model-connected.h5
+app/model-connected.h5
