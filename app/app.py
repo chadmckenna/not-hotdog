@@ -36,11 +36,18 @@ def is_hotdog():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        predictions_1 = predict_simple(file_path)
-        predictions_2 = predict_connected(file_path)
-        return jsonify([
-                {'what': predictions_1[0], 'probability': predictions_1[1].tolist()},
-                {'what': predictions_2[0], 'probability': predictions_2[1].tolist()}
-            ])
+        merged = merge_predictions(predict_simple(file_path), predict_connected(file_path))
+        return jsonify(
+                {'what': merged[0], 'probability': merged[1]},
+            )
 
     return 'Nope'
+
+
+def merge_predictions(model1, model2):
+    mean = (model1[1] + model2[1]) / 2
+
+    if mean > 0.8:
+        return 'hotdog', mean
+    else:
+        return 'not hotdog', mean
