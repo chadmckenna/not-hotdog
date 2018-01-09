@@ -4,6 +4,7 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from model import predict as predict_simple
 from model_connected import predict as predict_connected
+from PIL import Image
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
@@ -29,14 +30,13 @@ def is_hotdog():
         return redirect('/')
 
     file = request.files['file']
+    img = Image.open(file)
+    img = img.resize((150, 150))
 
     if file.filename == '':
         return redirect('/')
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        merged = merge_predictions(predict_simple(file_path), predict_connected(file_path))
+        merged = merge_predictions(predict_simple(img), predict_connected(img))
         return jsonify(
                 {'what': merged[0], 'probability': merged[1]},
             )

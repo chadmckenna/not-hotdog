@@ -3,7 +3,7 @@ import tensorflow as tf
 import keras
 from keras.applications.vgg16 import VGG16
 from keras.models import load_model
-from keras.preprocessing.image import img_to_array, load_img
+from keras.preprocessing.image import img_to_array
 
 top_model_weights_path = 'weights-skewed.h5'
 model_name = 'model-skewed.h5'
@@ -31,8 +31,7 @@ def make_prediction(base_model, model, img):
     prob = 1 - model.predict_proba(feature_img)[0,0]
     return predict_class(prob), prob
 
-def predict(img_filename):
-    img = load_img(img_filename, False, target_size=(150, 150))
+def predict(img):
     with graph.as_default():
         prediction, prob = make_prediction(base_model, model, img)
         return ['hotdog', 'not hotdog'][prediction], prob

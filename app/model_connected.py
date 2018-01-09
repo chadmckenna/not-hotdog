@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import keras
 from keras.models import load_model
-from keras.preprocessing.image import img_to_array, load_img
+from keras.preprocessing.image import img_to_array
 
 top_model_weights_path = 'weights-connected.h5'
 model_name = 'model-connected.h5'
@@ -23,7 +23,7 @@ def predict_classes(proba):
     else:
         return (proba > 0.2).astype('int32')
 
-def predict(img_filename):
-    img = shape_img(load_img(img_filename, False, target_size=(150, 150)))
+def predict(img):
+    img = shape_img(img)
     with graph.as_default():
         return ['hotdog', 'not hotdog'][predict_classes(model.predict(img))[0,0]], 1 - model.predict(img)[0,0]
